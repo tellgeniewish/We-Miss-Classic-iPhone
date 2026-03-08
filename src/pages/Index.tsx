@@ -1,19 +1,51 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, User, LogOut } from "lucide-react";
+import { Heart, User, LogOut, Share2, Link, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import iphoneImage from "@/assets/iphone-classic.png";
 
 const Index = () => {
   const navigate = useNavigate();
   const [count] = useState(1247);
   const [hasVoted, setHasVoted] = useState(false);
-  const [isLoggedIn] = useState(true); // 목업용
+  const [isLoggedIn] = useState(true);
 
   const handleVote = () => {
     if (!hasVoted) {
       setHasVoted(true);
     }
+  };
+
+  const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const shareText = "우리는 클래식 아이폰이 그립습니다. 당신도 그렇다면 마음을 전해주세요.";
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast("링크가 복사되었습니다");
+    } catch {
+      toast("링크 복사에 실패했습니다");
+    }
+  };
+
+  const handleShareTwitter = () => {
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+      "_blank"
+    );
+  };
+
+  const handleShareKakao = () => {
+    // 카카오 SDK 미연동 상태에서는 URL 복사로 대체
+    handleCopyLink();
+    toast("카카오톡 공유는 준비 중입니다. 링크가 복사되었습니다.");
   };
 
   return (
@@ -45,7 +77,7 @@ const Index = () => {
           <div className="mb-8 flex justify-center">
             <img
               src={iphoneImage}
-              alt="Classic iPhone with home button"
+              alt="Classic iPhone with home button and Apple logo"
               className="w-48 h-auto drop-shadow-2xl animate-slide-up"
             />
           </div>
@@ -69,7 +101,7 @@ const Index = () => {
             </p>
           </div>
 
-          {/* 투표 버튼 */}
+          {/* 공감 버튼 */}
           <Button
             onClick={handleVote}
             disabled={hasVoted}
@@ -83,6 +115,38 @@ const Index = () => {
             <Heart className={`w-4 h-4 mr-2 ${hasVoted ? "" : "fill-current"}`} />
             {hasVoted ? "이미 마음을 전했습니다" : "나도 그립습니다"}
           </Button>
+
+          {/* 공유 버튼 */}
+          <div className="mt-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full text-xs text-muted-foreground hover:text-foreground gap-1.5"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  공유하기
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-48 rounded-xl">
+                <DropdownMenuItem onClick={handleCopyLink} className="gap-2 cursor-pointer">
+                  <Link className="w-4 h-4" />
+                  링크 복사
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareTwitter} className="gap-2 cursor-pointer">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                  X (Twitter)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareKakao} className="gap-2 cursor-pointer">
+                  <MessageCircle className="w-4 h-4" />
+                  카카오톡
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           {!isLoggedIn && (
             <p className="text-xs text-muted-foreground mt-4">
