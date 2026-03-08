@@ -186,28 +186,28 @@ const Index = () => {
 
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          <div className="mb-8 flex justify-center">
+          <div className="mb-4 sm:mb-8 mt-4 sm:mt-0 flex justify-center">
             <img
               src={iphoneImage}
               alt="Classic iPhone with home button and Apple logo"
-              className="w-52 h-auto animate-slide-up dark:brightness-110 dark:contrast-110 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.08)]"
+              className="w-36 sm:w-52 h-auto animate-slide-up dark:brightness-110 dark:contrast-110 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.08)]"
             />
           </div>
 
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-2">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground mb-1 sm:mb-2">
             우리는 클래식 아이폰이 그립습니다
           </h1>
-          <p className="text-[13px] text-muted-foreground mb-10 leading-relaxed">
+          <p className="text-[13px] text-muted-foreground mb-6 sm:mb-10 leading-relaxed">
             홈 버튼, 하나의 카메라, 깔끔한 일자 베젤, 하단의 이어폰 단자,<br />
             그리고 박스를 열면 들어있던 이어폰과 충전기까지.<br />
             그 시절의 아이폰을 그리워하는 사람들의 마음을 모읍니다.
           </p>
 
-          <div className="mb-8">
-            <div className="text-6xl font-light tracking-tight text-foreground animate-count-up">
+          <div className="mb-5 sm:mb-8">
+            <div className="text-5xl sm:text-6xl font-light tracking-tight text-foreground animate-count-up">
               {isLoading || authLoading ? "···" : (count ?? 0).toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-2 tracking-wide uppercase">
+            <p className="text-xs text-muted-foreground mt-1 sm:mt-2 tracking-wide uppercase">
               명이 그리워하고 있습니다
             </p>
           </div>
