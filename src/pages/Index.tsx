@@ -97,8 +97,30 @@ const Index = () => {
   };
 
   const handleShareKakao = () => {
-    handleCopyLink();
-    toast("카카오톡 공유는 준비 중입니다. 링크가 복사되었습니다.");
+    const Kakao = (window as any).Kakao;
+    if (!Kakao) {
+      handleCopyLink();
+      toast("카카오 SDK를 불러올 수 없습니다. 링크가 복사되었습니다.");
+      return;
+    }
+    if (!Kakao.isInitialized()) {
+      Kakao.init("7f15b3566da4bdf39a5925e217aabeee");
+    }
+    Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: "우리는 클래식 아이폰이 그립습니다",
+        description: "홈 버튼, 하나의 카메라, 깔끔한 베젤… 그 시절의 아이폰을 그리워하는 마음을 모읍니다.",
+        imageUrl: "https://id-preview--f0de4e5d-6d73-4f33-8b24-ebb601a9bb7c.lovable.app/placeholder.svg",
+        link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+      },
+      buttons: [
+        {
+          title: "나도 그립습니다",
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+        },
+      ],
+    });
   };
 
   return (
