@@ -42,6 +42,7 @@
 | Database | PostgreSQL |
 | Cloud | Lovable Cloud |
 | Share SDK | Kakao JS SDK, X(Twitter) Intent |
+| Dev Tool | Lovable (AI Vibe Coding) |
 
 <br/>
 
