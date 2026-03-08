@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 const Index = () => {
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [count, setCount] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
