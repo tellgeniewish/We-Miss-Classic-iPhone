@@ -13,24 +13,25 @@ import {
 import iphoneImage from "@/assets/iphone-classic.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocale } from "@/hooks/useLocale";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
+  const { t } = useLocale();
   const [count, setCount] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
-      // 총 투표 수 조회
       const { count: voteCount } = await supabase
         .from("votes")
         .select("*", { count: "exact", head: true });
       setCount(voteCount ?? 0);
 
-      // 로그인한 사용자의 투표 여부 확인
       if (user) {
         const { data } = await supabase
           .from("votes")
@@ -59,39 +60,38 @@ const Index = () => {
     if (error) {
       if (error.code === "23505") {
         setHasVoted(true);
-        toast("이미 마음을 전하셨습니다");
+        toast(t("toast.already_voted"));
       } else {
-        toast("오류가 발생했습니다. 다시 시도해주세요.");
+        toast(t("toast.error"));
       }
       return;
     }
 
     setHasVoted(true);
     setCount((prev) => (prev ?? 0) + 1);
-    toast("마음이 전해졌습니다 ❤️");
+    toast(t("toast.voted"));
   };
 
   const handleLogout = async () => {
     await signOut();
     setHasVoted(false);
-    toast("로그아웃되었습니다");
+    toast(t("toast.logged_out"));
   };
 
   const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const shareText = "우리는 클래식 아이폰이 그립습니다. 당신도 그렇다면 마음을 전해주세요.";
 
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
-      toast("링크가 복사되었습니다");
+      toast(t("toast.link_copied"));
     } catch {
-      toast("링크 복사에 실패했습니다");
+      toast(t("toast.link_copy_fail"));
     }
   };
 
   const handleShareTwitter = () => {
     window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(t("index.title"))}&url=${encodeURIComponent(shareUrl)}`,
       "_blank"
     );
   };
@@ -120,14 +120,14 @@ const Index = () => {
       Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
-          title: "우리는 클래식 아이폰이 그립습니다",
-          description: "홈 버튼, 하나의 카메라, 깔끔한 베젤… 그 시절의 아이폰을 그리워하는 마음을 모읍니다.",
+          title: t("kakao.title"),
+          description: t("kakao.desc"),
           imageUrl: "https://id-preview--f0de4e5d-6d73-4f33-8b24-ebb601a9bb7c.lovable.app/placeholder.svg",
           link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
         },
         buttons: [
           {
-            title: "나도 그립습니다",
+            title: t("kakao.button"),
             link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
           },
         ],
@@ -135,7 +135,7 @@ const Index = () => {
     } catch (e) {
       console.error("Kakao Share error:", e);
       handleCopyLink();
-      toast("카카오톡 공유 중 오류가 발생했습니다. 링크가 복사되었습니다.");
+      toast(t("toast.kakao_error"));
     }
   };
 
@@ -146,7 +146,8 @@ const Index = () => {
           <span className="text-sm font-medium tracking-tight text-foreground">
             We Miss Classic iPhone
           </span>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <LanguageSwitcher />
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="p-2 rounded-full hover:bg-secondary transition-colors"
@@ -175,9 +176,9 @@ const Index = () => {
             ) : (
               <button
                 onClick={() => navigate("/login")}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors pl-2"
               >
-                로그인
+                {t("nav.login")}
               </button>
             )}
           </div>
@@ -187,7 +188,7 @@ const Index = () => {
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6 sm:-mt-8">
         <div className="max-w-md w-full text-center animate-fade-in">
           <p className="text-xs text-muted-foreground mb-4 sm:mb-6 mt-4 sm:mt-0">
-            Sometimes, simplicity was everything.
+            {t("index.tagline")}
           </p>
           <div className="mb-4 sm:mb-8 flex justify-center">
             <img
@@ -198,12 +199,12 @@ const Index = () => {
           </div>
 
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground mb-1 sm:mb-2">
-            우리는 클래식 아이폰이 그립습니다
+            {t("index.title")}
           </h1>
           <p className="text-[13px] text-muted-foreground mb-6 sm:mb-10 leading-relaxed">
-            홈 버튼, 하나의 카메라, 깔끔한 일자 베젤, 하단의 이어폰 단자,<br />
-            그리고 박스를 열면 들어있던 이어폰과 충전기까지.<br />
-            그 시절의 아이폰을 그리워하는 사람들의 마음을 모읍니다.
+            {t("index.desc.line1")}<br />
+            {t("index.desc.line2")}<br />
+            {t("index.desc.line3")}
           </p>
 
           <div className="mb-5 sm:mb-8">
@@ -211,7 +212,7 @@ const Index = () => {
               {isLoading || authLoading ? "···" : (count ?? 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground mt-1 sm:mt-2 tracking-wide uppercase">
-              명이 그리워하고 있습니다
+              {t("index.count_label")}
             </p>
           </div>
 
@@ -226,7 +227,7 @@ const Index = () => {
             }`}
           >
             <Heart className={`w-4 h-4 mr-2 ${hasVoted ? "" : "fill-current"}`} />
-            {!user ? "로그인하고 마음 전하기" : hasVoted ? "이미 마음을 전했습니다" : "나도 그립습니다"}
+            {!user ? t("index.vote_login") : hasVoted ? t("index.vote_done") : t("index.vote")}
           </Button>
 
           <div className="mt-4">
@@ -238,13 +239,13 @@ const Index = () => {
                   className="rounded-full text-xs text-muted-foreground hover:text-foreground gap-1.5"
                 >
                   <Share2 className="w-3.5 h-3.5" />
-                  공유하기
+                  {t("index.share")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="center" className="w-48 rounded-xl">
                 <DropdownMenuItem onClick={handleCopyLink} className="gap-2 cursor-pointer">
                   <Link className="w-4 h-4" />
-                  링크 복사
+                  {t("index.copy_link")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleShareTwitter} className="gap-2 cursor-pointer">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -254,7 +255,7 @@ const Index = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleShareKakao} className="gap-2 cursor-pointer">
                   <MessageCircle className="w-4 h-4" />
-                  카카오톡
+                  {t("index.kakao")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

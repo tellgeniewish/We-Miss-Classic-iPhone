@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocale } from "@/hooks/useLocale";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,7 @@ import {
 const MyPage = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { t } = useLocale();
   const [vote, setVote] = useState<{ created_at: string } | null>(null);
 
   useEffect(() => {
@@ -49,12 +51,12 @@ const MyPage = () => {
     const { error } = await supabase.functions.invoke("delete-account");
 
     if (error) {
-      toast("탈퇴 처리 중 오류가 발생했습니다");
+      toast(t("toast.delete_error"));
       return;
     }
 
     await signOut();
-    toast("탈퇴가 완료되었습니다");
+    toast(t("toast.deleted"));
     navigate("/");
   };
 
@@ -70,7 +72,7 @@ const MyPage = () => {
           >
             <ArrowLeft className="w-4 h-4 text-foreground" />
           </button>
-          <span className="ml-3 text-sm font-medium text-foreground">마이페이지</span>
+          <span className="ml-3 text-sm font-medium text-foreground">{t("mypage.title")}</span>
         </div>
       </nav>
 
@@ -80,7 +82,7 @@ const MyPage = () => {
             <span className="text-2xl">👤</span>
           </div>
           <h2 className="text-lg font-medium text-foreground">
-            {user.user_metadata?.full_name || "사용자"}
+            {user.user_metadata?.full_name || t("mypage.user")}
           </h2>
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
@@ -94,7 +96,7 @@ const MyPage = () => {
                 <Heart className="w-4 h-4 text-primary fill-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-foreground">마음을 전했습니다</p>
+                <p className="text-sm font-medium text-foreground">{t("mypage.voted")}</p>
                 <p className="text-xs text-muted-foreground">
                   {new Date(vote.created_at).toLocaleDateString("ko-KR")}
                 </p>
@@ -103,7 +105,7 @@ const MyPage = () => {
           </div>
         ) : (
           <div className="bg-card rounded-xl p-5 mb-6 border border-border text-center">
-            <p className="text-sm text-muted-foreground">아직 투표하지 않았습니다</p>
+            <p className="text-sm text-muted-foreground">{t("mypage.not_voted")}</p>
           </div>
         )}
 
@@ -112,7 +114,7 @@ const MyPage = () => {
             onClick={handleLogout}
             className="w-full text-left px-4 py-3 rounded-lg hover:bg-secondary transition-colors text-sm text-foreground"
           >
-            로그아웃
+            {t("mypage.logout")}
           </button>
         </div>
 
@@ -125,31 +127,30 @@ const MyPage = () => {
               className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 text-sm"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              회원 탈퇴
+              {t("mypage.delete")}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent className="rounded-2xl max-w-sm">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-base">정말 탈퇴하시겠습니까?</AlertDialogTitle>
+              <AlertDialogTitle className="text-base">{t("mypage.delete_title")}</AlertDialogTitle>
               <AlertDialogDescription className="text-sm">
-                탈퇴하시면 투표 기록이 삭제되고 집계에서 차감됩니다.
-                이 작업은 되돌릴 수 없습니다.
+                {t("mypage.delete_desc")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="rounded-lg text-sm">취소</AlertDialogCancel>
+              <AlertDialogCancel className="rounded-lg text-sm">{t("mypage.cancel")}</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDeleteAccount}
                 className="rounded-lg text-sm bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                탈퇴하기
+                {t("mypage.confirm_delete")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          탈퇴 시 집계 수가 1 차감됩니다
+          {t("mypage.delete_note")}
         </p>
       </main>
     </div>
