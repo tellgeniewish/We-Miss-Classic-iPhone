@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, User, LogOut, Share2, Link, MessageCircle } from "lucide-react";
+import { Heart, User, LogOut, Share2, Link, MessageCircle, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
