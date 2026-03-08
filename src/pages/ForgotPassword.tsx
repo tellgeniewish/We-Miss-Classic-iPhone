@@ -6,9 +6,11 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
+import { useLocale } from "@/hooks/useLocale";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -38,36 +40,36 @@ const ForgotPassword = () => {
           className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          로그인으로 돌아가기
+          {t("forgot.back")}
         </button>
 
         <h1 className="text-xl font-semibold tracking-tight text-foreground mb-2">
-          비밀번호 재설정
+          {t("forgot.title")}
         </h1>
 
         {sent ? (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="font-medium text-foreground">{email}</span>으로
-              비밀번호 재설정 링크를 보냈습니다. 이메일을 확인해주세요.
+              <span className="font-medium text-foreground">{email}</span>
+              {t("forgot.sent")}
             </p>
             <Button
               variant="outline"
               className="w-full h-11 rounded-lg text-sm"
               onClick={() => navigate("/login")}
             >
-              로그인으로 돌아가기
+              {t("forgot.back")}
             </Button>
           </div>
         ) : (
           <>
             <p className="text-sm text-muted-foreground mb-6">
-              가입한 이메일을 입력하면 비밀번호 재설정 링크를 보내드립니다.
+              {t("forgot.desc")}
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-xs text-muted-foreground">
-                  이메일
+                  {t("login.email")}
                 </Label>
                 <Input
                   id="email"
@@ -84,7 +86,7 @@ const ForgotPassword = () => {
                 disabled={isLoading}
                 className="w-full h-11 rounded-lg text-sm font-medium"
               >
-                {isLoading ? "전송 중..." : "재설정 링크 보내기"}
+                {isLoading ? t("forgot.loading") : t("forgot.submit")}
               </Button>
             </form>
           </>
