@@ -107,6 +107,16 @@ const Index = () => {
           </span>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 rounded-full hover:bg-secondary transition-colors"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <Moon className="w-4 h-4 text-muted-foreground" />
+              )}
+            </button>
+            <button
               onClick={() => navigate("/mypage")}
               className="p-2 rounded-full hover:bg-secondary transition-colors"
             >
