@@ -45,8 +45,14 @@ const MyPage = () => {
 
   const handleDeleteAccount = async () => {
     if (!user) return;
-    // Delete vote first (if exists), then sign out
-    await supabase.from("votes").delete().eq("user_id", user.id);
+
+    const { error } = await supabase.functions.invoke("delete-account");
+
+    if (error) {
+      toast("탈퇴 처리 중 오류가 발생했습니다");
+      return;
+    }
+
     await signOut();
     toast("탈퇴가 완료되었습니다");
     navigate("/");
