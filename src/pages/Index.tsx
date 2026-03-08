@@ -96,19 +96,27 @@ const Index = () => {
     );
   };
 
-  const handleShareKakao = () => {
-    const Kakao = (window as any).Kakao;
-    if (!Kakao) {
-      console.error("Kakao SDK not loaded");
-      handleCopyLink();
-      toast("카카오 SDK를 불러올 수 없습니다. 링크가 복사되었습니다.");
-      return;
-    }
-    if (!Kakao.isInitialized()) {
-      Kakao.init("7f15b3566da4bdf39a5925e217aabeee");
-      console.log("Kakao initialized:", Kakao.isInitialized());
-    }
+  const loadKakaoSdk = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      const Kakao = (window as any).Kakao;
+      if (Kakao) {
+        resolve(Kakao);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js";
+      script.onload = () => resolve((window as any).Kakao);
+      script.onerror = () => reject(new Error("Failed to load Kakao SDK"));
+      document.head.appendChild(script);
+    });
+  };
+
+  const handleShareKakao = async () => {
     try {
+      const Kakao = await loadKakaoSdk();
+      if (!Kakao.isInitialized()) {
+        Kakao.init("7f15b3566da4bdf39a5925e217aabeee");
+      }
       Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
