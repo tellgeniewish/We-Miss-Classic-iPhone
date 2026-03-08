@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, User, LogOut, Share2, Link, MessageCircle } from "lucide-react";
+import { Heart, User, LogOut, Share2, Link, MessageCircle, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 const Index = () => {
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [count, setCount] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
@@ -104,6 +106,16 @@ const Index = () => {
             We Miss Classic iPhone
           </span>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 rounded-full hover:bg-secondary transition-colors"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <Moon className="w-4 h-4 text-muted-foreground" />
+              )}
+            </button>
             <button
               onClick={() => navigate("/mypage")}
               className="p-2 rounded-full hover:bg-secondary transition-colors"
