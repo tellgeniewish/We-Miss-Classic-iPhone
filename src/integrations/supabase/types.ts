@@ -14,21 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       votes: {
         Row: {
           created_at: string
           fingerprint: string
           id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           fingerprint: string
           id?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           fingerprint?: string
           id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
