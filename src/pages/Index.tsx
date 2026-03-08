@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IPhoneViewer3D from "@/components/IPhoneViewer3D";
+import iphoneImage from "@/assets/iphone-classic.png";
 import { supabase } from "@/integrations/supabase/client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
@@ -132,15 +132,21 @@ const Index = () => {
       {/* 메인 콘텐츠 */}
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          {/* 아이폰 3D 360° 뷰어 */}
-          <IPhoneViewer3D />
+          {/* 아이폰 이미지 */}
+          <div className="mb-8 flex justify-center">
+            <img
+              src={iphoneImage}
+              alt="Classic iPhone with home button and Apple logo"
+              className="w-52 h-auto animate-slide-up dark:brightness-110 dark:contrast-110 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.08)]"
+            />
+          </div>
 
           {/* 타이틀 */}
           <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-2">
             우리는 클래식 아이폰이 그립습니다
           </h1>
           <p className="text-sm text-muted-foreground mb-10 leading-relaxed">
-            홈 버튼, 하나의 카메라, 깔끔한 일자 베젤, 그리고 이어폰 단자까지.<br />
+            홈 버튼, 하나의 카메라, 깔끔한 일자 베젤.<br />
             그 시절의 아이폰을 그리워하는 사람들의 마음을 모읍니다.
           </p>
 
