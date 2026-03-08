@@ -134,13 +134,11 @@ const Index = () => {
         <div className="max-w-md w-full text-center animate-fade-in">
           {/* 아이폰 이미지 */}
           <div className="mb-8 flex justify-center">
-            <div className="relative p-4 rounded-3xl dark:bg-muted/30 transition-colors">
-              <img
-                src={iphoneImage}
-                alt="Classic iPhone with home button and Apple logo"
-                className="w-48 h-auto drop-shadow-2xl dark:drop-shadow-none dark:brightness-110 animate-slide-up"
-              />
-            </div>
+            <img
+              src={iphoneImage}
+              alt="Classic iPhone with home button and Apple logo"
+              className="w-52 h-auto animate-slide-up dark:brightness-110 dark:contrast-110 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.08)]"
+            />
           </div>
 
           {/* 타이틀 */}
