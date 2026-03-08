@@ -186,7 +186,10 @@ const Index = () => {
 
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          <div className="mb-4 sm:mb-8 mt-4 sm:mt-0 flex justify-center">
+          <p className="text-xs text-muted-foreground mb-2 sm:mb-3 mt-4 sm:mt-0">
+            Sometimes, simplicity was everything.
+          </p>
+          <div className="mb-4 sm:mb-8 flex justify-center">
             <img
               src={iphoneImage}
               alt="Classic iPhone with home button and Apple logo"
@@ -258,9 +261,6 @@ const Index = () => {
           </div>
         </div>
 
-        <footer className="mt-3 pb-8 text-xs text-muted-foreground">
-          Sometimes, simplicity was everything.
-        </footer>
       </main>
     </div>
   );
