@@ -70,6 +70,12 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-sm animate-fade-in">
+        <button
+          onClick={() => navigate("/")}
+          className="mb-6 p-2 -ml-2 rounded-full hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
         <div className="text-center mb-10">
           <div className="text-3xl mb-2">📱</div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
