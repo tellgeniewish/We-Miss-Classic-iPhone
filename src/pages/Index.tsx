@@ -10,7 +10,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import iphoneImage from "@/assets/iphone-classic.png";
+import iphoneFront from "@/assets/iphone-se1-front.png";
+import iphoneBack from "@/assets/iphone-se1-back.png";
+import iphoneLeft from "@/assets/iphone-se1-left.png";
+import iphoneSide from "@/assets/iphone-se1-side.png";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 import { supabase } from "@/integrations/supabase/client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
