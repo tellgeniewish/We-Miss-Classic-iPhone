@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IPhoneViewer360 from "@/components/IPhoneViewer360";
+import IPhoneViewer3D from "@/components/IPhoneViewer3D";
 import { supabase } from "@/integrations/supabase/client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
@@ -132,8 +132,8 @@ const Index = () => {
       {/* 메인 콘텐츠 */}
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          {/* 아이폰 360° 뷰어 */}
-          <IPhoneViewer360 />
+          {/* 아이폰 3D 360° 뷰어 */}
+          <IPhoneViewer3D />
 
           {/* 타이틀 */}
           <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-2">
