@@ -12,54 +12,52 @@ import {
 } from "@/components/ui/dropdown-menu";
 import iphoneImage from "@/assets/iphone-classic.png";
 import { supabase } from "@/integrations/supabase/client";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const { user, loading: authLoading, signOut } = useAuth();
   const [count, setCount] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [fingerprint, setFingerprint] = useState<string | null>(null);
 
-  // 핑거프린트 초기화 및 투표 수 로드
   useEffect(() => {
     const init = async () => {
-      // 핑거프린트 생성
-      const fp = await FingerprintJS.load();
-      const result = await fp.get();
-      const visitorId = result.visitorId;
-      setFingerprint(visitorId);
-
       // 총 투표 수 조회
       const { count: voteCount } = await supabase
         .from("votes")
         .select("*", { count: "exact", head: true });
       setCount(voteCount ?? 0);
 
-      // 이미 투표했는지 확인
-      const { data } = await supabase
-        .from("votes")
-        .select("id")
-        .eq("fingerprint", visitorId)
-        .maybeSingle();
-      if (data) setHasVoted(true);
+      // 로그인한 사용자의 투표 여부 확인
+      if (user) {
+        const { data } = await supabase
+          .from("votes")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (data) setHasVoted(true);
+      }
 
       setIsLoading(false);
     };
-    init();
-  }, []);
+    if (!authLoading) init();
+  }, [user, authLoading]);
 
   const handleVote = async () => {
-    if (!fingerprint || hasVoted) return;
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    if (hasVoted) return;
 
     const { error } = await supabase
       .from("votes")
-      .insert({ fingerprint });
+      .insert({ user_id: user.id, fingerprint: user.id });
 
     if (error) {
       if (error.code === "23505") {
-        // unique violation — already voted
         setHasVoted(true);
         toast("이미 마음을 전하셨습니다");
       } else {
@@ -71,6 +69,12 @@ const Index = () => {
     setHasVoted(true);
     setCount((prev) => (prev ?? 0) + 1);
     toast("마음이 전해졌습니다 ❤️");
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    setHasVoted(false);
+    toast("로그아웃되었습니다");
   };
 
   const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
@@ -99,7 +103,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* 네비게이션 */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-sm font-medium tracking-tight text-foreground">
@@ -116,23 +119,35 @@ const Index = () => {
                 <Moon className="w-4 h-4 text-muted-foreground" />
               )}
             </button>
-            <button
-              onClick={() => navigate("/mypage")}
-              className="p-2 rounded-full hover:bg-secondary transition-colors"
-            >
-              <User className="w-4 h-4 text-muted-foreground" />
-            </button>
-            <button className="p-2 rounded-full hover:bg-secondary transition-colors">
-              <LogOut className="w-4 h-4 text-muted-foreground" />
-            </button>
+            {user ? (
+              <>
+                <button
+                  onClick={() => navigate("/mypage")}
+                  className="p-2 rounded-full hover:bg-secondary transition-colors"
+                >
+                  <User className="w-4 h-4 text-muted-foreground" />
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 rounded-full hover:bg-secondary transition-colors"
+                >
+                  <LogOut className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                로그인
+              </button>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* 메인 콘텐츠 */}
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          {/* 아이폰 이미지 */}
           <div className="mb-8 flex justify-center">
             <img
               src={iphoneImage}
@@ -141,7 +156,6 @@ const Index = () => {
             />
           </div>
 
-          {/* 타이틀 */}
           <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-2">
             우리는 클래식 아이폰이 그립습니다
           </h1>
@@ -151,20 +165,18 @@ const Index = () => {
             그 시절의 아이폰을 그리워하는 사람들의 마음을 모읍니다.
           </p>
 
-          {/* 카운터 */}
           <div className="mb-8">
             <div className="text-6xl font-light tracking-tight text-foreground animate-count-up">
-              {isLoading ? "···" : (count ?? 0).toLocaleString()}
+              {isLoading || authLoading ? "···" : (count ?? 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground mt-2 tracking-wide uppercase">
               명이 그리워하고 있습니다
             </p>
           </div>
 
-          {/* 공감 버튼 */}
           <Button
             onClick={handleVote}
-            disabled={hasVoted || isLoading}
+            disabled={hasVoted || (isLoading && !!user)}
             size="lg"
             className={`rounded-full px-10 h-12 text-sm font-medium transition-all duration-300 ${
               hasVoted
@@ -173,10 +185,9 @@ const Index = () => {
             }`}
           >
             <Heart className={`w-4 h-4 mr-2 ${hasVoted ? "" : "fill-current"}`} />
-            {hasVoted ? "이미 마음을 전했습니다" : "나도 그립습니다"}
+            {!user ? "로그인하고 마음 전하기" : hasVoted ? "이미 마음을 전했습니다" : "나도 그립습니다"}
           </Button>
 
-          {/* 공유 버튼 */}
           <div className="mt-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -209,7 +220,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* 하단 */}
         <footer className="absolute bottom-6 text-xs text-muted-foreground">
           Sometimes, simplicity was everything.
         </footer>

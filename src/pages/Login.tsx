@@ -4,23 +4,71 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+import { toast } from "@/components/ui/sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 목업: 바로 메인으로 이동
-    navigate("/");
+    setIsLoading(true);
+
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (error) {
+        toast(error.message);
+      } else {
+        toast("인증 이메일을 확인해주세요");
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        toast(error.message);
+      } else {
+        navigate("/");
+      }
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
+    if (error) toast("Google 로그인에 실패했습니다");
+  };
+
+  const handleAppleLogin = async () => {
+    const { error } = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: window.location.origin,
+    });
+    if (error) toast("Apple 로그인에 실패했습니다");
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-sm animate-fade-in">
-        {/* 로고 영역 */}
         <div className="text-center mb-10">
           <div className="text-3xl mb-2">📱</div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
@@ -31,12 +79,11 @@ const Login = () => {
           </p>
         </div>
 
-        {/* 소셜 로그인 */}
         <div className="space-y-3 mb-6">
           <Button
             variant="outline"
             className="w-full h-11 rounded-lg text-sm font-normal border-border"
-            onClick={() => navigate("/")}
+            onClick={handleGoogleLogin}
           >
             <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -50,7 +97,7 @@ const Login = () => {
           <Button
             variant="outline"
             className="w-full h-11 rounded-lg text-sm font-normal border-border"
-            onClick={() => navigate("/")}
+            onClick={handleAppleLogin}
           >
             <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
@@ -65,7 +112,6 @@ const Login = () => {
           <Separator className="flex-1" />
         </div>
 
-        {/* 이메일 로그인 */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-xs text-muted-foreground">
@@ -78,6 +124,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="h-11 rounded-lg text-sm"
               placeholder="hello@example.com"
+              required
             />
           </div>
 
@@ -92,14 +139,17 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="h-11 rounded-lg text-sm"
               placeholder="••••••••"
+              required
+              minLength={6}
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full h-11 rounded-lg text-sm font-medium bg-primary text-primary-foreground"
+            disabled={isLoading}
+            className="w-full h-11 rounded-lg text-sm font-medium"
           >
-            {isSignUp ? "회원가입" : "로그인"}
+            {isLoading ? "처리 중..." : isSignUp ? "회원가입" : "로그인"}
           </Button>
         </form>
 
