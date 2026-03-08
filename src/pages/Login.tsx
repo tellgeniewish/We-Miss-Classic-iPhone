@@ -153,6 +153,17 @@ const Login = () => {
           </Button>
         </form>
 
+        {!isSignUp && (
+          <p className="text-center text-xs text-muted-foreground mt-3">
+            <button
+              onClick={() => navigate("/forgot-password")}
+              className="text-primary hover:underline"
+            >
+              비밀번호를 잊으셨나요?
+            </button>
+          </p>
+        )}
+
         <p className="text-center text-xs text-muted-foreground mt-6">
           {isSignUp ? "이미 계정이 있으신가요?" : "계정이 없으신가요?"}{" "}
           <button
