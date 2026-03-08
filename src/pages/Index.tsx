@@ -258,7 +258,7 @@ const Index = () => {
           </div>
         </div>
 
-        <footer className="mt-6 pb-8 text-xs text-muted-foreground">
+        <footer className="mt-3 pb-8 text-xs text-muted-foreground">
           Sometimes, simplicity was everything.
         </footer>
       </main>
