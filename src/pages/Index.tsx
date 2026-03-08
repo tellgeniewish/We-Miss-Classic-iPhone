@@ -140,7 +140,7 @@ const Index = () => {
             우리는 클래식 아이폰이 그립습니다
           </h1>
           <p className="text-sm text-muted-foreground mb-10 leading-relaxed">
-            홈 버튼, 하나의 카메라, 깔끔한 일자 베젤.<br />
+            홈 버튼, 하나의 카메라, 깔끔한 일자 베젤, 그리고 이어폰 단자까지.<br />
             그 시절의 아이폰을 그리워하는 사람들의 마음을 모읍니다.
           </p>
 
