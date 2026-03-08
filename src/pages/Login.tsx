@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+
 
 const Login = () => {
   const navigate = useNavigate();
