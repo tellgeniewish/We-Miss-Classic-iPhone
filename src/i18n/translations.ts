@@ -7,11 +7,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     
     // Index
     "index.tagline": "Sometimes, simplicity was everything.",
-    "index.title": "우리는 클래식 아이폰이 그립습니다",
+    "index.title": "우리는 클래식 아이폰이 그립습니다.",
     "index.desc.line1": "홈 버튼, 하나의 카메라, 깔끔한 일자 베젤, 하단의 이어폰 단자,",
     "index.desc.line2": "그리고 박스를 열면 들어있던 이어폰과 충전기까지.",
     "index.desc.line3": "그 시절의 아이폰을 그리워하는 사람들의 마음을 모읍니다.",
-    "index.count_label": "명이 그리워하고 있습니다",
+    "index.count_label": "명이 그리워하고 있습니다.",
     "index.vote_login": "로그인하고 마음 전하기",
     "index.vote_done": "이미 마음을 전했습니다",
     "index.vote": "나도 그립습니다",
