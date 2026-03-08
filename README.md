@@ -1,4 +1,5 @@
-# We Miss Classic iPhone: Sometimes, simplicity was everything.
+# We Miss Classic iPhone: Bring back the classic iPhone.
+![og-image](https://github.com/user-attachments/assets/e375fe3d-2ebe-47ce-bffd-6e624ea769a6)
 
 <br/>
 
@@ -22,6 +23,13 @@
 
 <br/>
 
+## 👫 <span id="팀원-소개">팀원 소개</span>
+
+| 지니(김현진) |
+|:----------------:|
+| <img src="https://github.com/tellgeniewish.png" width="100"/><br/> |
+| [@tellgeniewish](https://github.com/tellgeniewish) |
+
 <br/>
 
 ## 💻 <span id="사용-기술-스택">사용 기술 스택</span>
@@ -38,11 +46,11 @@
 | UI Icons | Lucide React |
 | Theme | next-themes (다크모드) |
 | i18n | 자체 구현 (ko/en/ja/zh) |
+| Dev Tool | Lovable (AI Vibe Coding) |
 | Backend / Auth | Lovable Cloud (Supabase) |
 | Database | PostgreSQL |
 | Cloud | Lovable Cloud |
 | Share SDK | Kakao JS SDK, X(Twitter) Intent |
-| Dev Tool | Lovable (AI Vibe Coding) |
 
 <br/>
 
