@@ -10,15 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import iphoneFront from "@/assets/iphone-se1-front.png";
-import iphoneBack from "@/assets/iphone-se1-back.png";
-import iphoneLeft from "@/assets/iphone-se1-left.png";
-import iphoneSide from "@/assets/iphone-se1-side.png";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+import IPhoneViewer360 from "@/components/IPhoneViewer360";
 import { supabase } from "@/integrations/supabase/client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
@@ -140,30 +132,8 @@ const Index = () => {
       {/* 메인 콘텐츠 */}
       <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          {/* 아이폰 이미지 캐러셀 */}
-          <div className="mb-8">
-            <Carousel className="w-full max-w-[240px] mx-auto" opts={{ loop: true }}>
-              <CarouselContent>
-                {[
-                  { src: iphoneFront, alt: "iPhone SE 1세대 전면" },
-                  { src: iphoneSide, alt: "iPhone SE 1세대 우측면" },
-                  { src: iphoneBack, alt: "iPhone SE 1세대 후면" },
-                  { src: iphoneLeft, alt: "iPhone SE 1세대 좌측면" },
-                ].map((img, i) => (
-                  <CarouselItem key={i}>
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      className="w-52 h-auto mx-auto animate-slide-up dark:brightness-110 dark:contrast-110 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.08)]"
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-            <p className="text-[10px] text-muted-foreground mt-3 tracking-wider uppercase">
-              ← 스와이프하여 360° 보기 →
-            </p>
-          </div>
+          {/* 아이폰 360° 뷰어 */}
+          <IPhoneViewer360 />
 
           {/* 타이틀 */}
           <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-2">
