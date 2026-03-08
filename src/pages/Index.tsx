@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, User, LogOut, Share2, Link, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -10,17 +10,65 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import iphoneImage from "@/assets/iphone-classic.png";
+import { supabase } from "@/integrations/supabase/client";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [count] = useState(1247);
+  const [count, setCount] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
-  const [isLoggedIn] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fingerprint, setFingerprint] = useState<string | null>(null);
 
-  const handleVote = () => {
-    if (!hasVoted) {
-      setHasVoted(true);
+  // 핑거프린트 초기화 및 투표 수 로드
+  useEffect(() => {
+    const init = async () => {
+      // 핑거프린트 생성
+      const fp = await FingerprintJS.load();
+      const result = await fp.get();
+      const visitorId = result.visitorId;
+      setFingerprint(visitorId);
+
+      // 총 투표 수 조회
+      const { count: voteCount } = await supabase
+        .from("votes")
+        .select("*", { count: "exact", head: true });
+      setCount(voteCount ?? 0);
+
+      // 이미 투표했는지 확인
+      const { data } = await supabase
+        .from("votes")
+        .select("id")
+        .eq("fingerprint", visitorId)
+        .maybeSingle();
+      if (data) setHasVoted(true);
+
+      setIsLoading(false);
+    };
+    init();
+  }, []);
+
+  const handleVote = async () => {
+    if (!fingerprint || hasVoted) return;
+
+    const { error } = await supabase
+      .from("votes")
+      .insert({ fingerprint });
+
+    if (error) {
+      if (error.code === "23505") {
+        // unique violation — already voted
+        setHasVoted(true);
+        toast("이미 마음을 전하셨습니다");
+      } else {
+        toast("오류가 발생했습니다. 다시 시도해주세요.");
+      }
+      return;
     }
+
+    setHasVoted(true);
+    setCount((prev) => (prev ?? 0) + 1);
+    toast("마음이 전해졌습니다 ❤️");
   };
 
   const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
@@ -43,7 +91,6 @@ const Index = () => {
   };
 
   const handleShareKakao = () => {
-    // 카카오 SDK 미연동 상태에서는 URL 복사로 대체
     handleCopyLink();
     toast("카카오톡 공유는 준비 중입니다. 링크가 복사되었습니다.");
   };
@@ -94,7 +141,7 @@ const Index = () => {
           {/* 카운터 */}
           <div className="mb-8">
             <div className="text-6xl font-light tracking-tight text-foreground animate-count-up">
-              {(hasVoted ? count + 1 : count).toLocaleString()}
+              {isLoading ? "···" : (count ?? 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground mt-2 tracking-wide uppercase">
               명이 그리워하고 있습니다
@@ -104,7 +151,7 @@ const Index = () => {
           {/* 공감 버튼 */}
           <Button
             onClick={handleVote}
-            disabled={hasVoted}
+            disabled={hasVoted || isLoading}
             size="lg"
             className={`rounded-full px-10 h-12 text-sm font-medium transition-all duration-300 ${
               hasVoted
@@ -147,19 +194,6 @@ const Index = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-
-          {!isLoggedIn && (
-            <p className="text-xs text-muted-foreground mt-4">
-              마음을 전하려면{" "}
-              <button
-                onClick={() => navigate("/login")}
-                className="text-primary hover:underline"
-              >
-                로그인
-              </button>
-              이 필요합니다
-            </p>
-          )}
         </div>
 
         {/* 하단 */}
