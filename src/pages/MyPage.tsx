@@ -1,7 +1,11 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Heart, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,10 +20,42 @@ import {
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const { user, loading, signOut } = useAuth();
+  const [vote, setVote] = useState<{ created_at: string } | null>(null);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+      return;
+    }
+    if (user) {
+      supabase
+        .from("votes")
+        .select("created_at")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setVote(data));
+    }
+  }, [user, loading, navigate]);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    // Delete vote first (if exists), then sign out
+    await supabase.from("votes").delete().eq("user_id", user.id);
+    await signOut();
+    toast("탈퇴가 완료되었습니다");
+    navigate("/");
+  };
+
+  if (loading || !user) return null;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* 네비게이션 */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center">
           <button
@@ -33,43 +69,49 @@ const MyPage = () => {
       </nav>
 
       <main className="pt-14 max-w-md mx-auto px-6 py-10 animate-fade-in">
-        {/* 프로필 */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-3">
             <span className="text-2xl">👤</span>
           </div>
-          <h2 className="text-lg font-medium text-foreground">사용자</h2>
-          <p className="text-sm text-muted-foreground">user@example.com</p>
+          <h2 className="text-lg font-medium text-foreground">
+            {user.user_metadata?.full_name || "사용자"}
+          </h2>
+          <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
 
         <Separator className="mb-6" />
 
-        {/* 투표 상태 */}
-        <div className="bg-card rounded-xl p-5 mb-6 border border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Heart className="w-4 h-4 text-primary fill-primary" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-foreground">마음을 전했습니다</p>
-              <p className="text-xs text-muted-foreground">2024년 3월 8일</p>
+        {vote ? (
+          <div className="bg-card rounded-xl p-5 mb-6 border border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Heart className="w-4 h-4 text-primary fill-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">마음을 전했습니다</p>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(vote.created_at).toLocaleDateString("ko-KR")}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-card rounded-xl p-5 mb-6 border border-border text-center">
+            <p className="text-sm text-muted-foreground">아직 투표하지 않았습니다</p>
+          </div>
+        )}
 
-        {/* 메뉴 */}
         <div className="space-y-1 mb-10">
-          <button className="w-full text-left px-4 py-3 rounded-lg hover:bg-secondary transition-colors text-sm text-foreground">
-            비밀번호 변경
-          </button>
-          <button className="w-full text-left px-4 py-3 rounded-lg hover:bg-secondary transition-colors text-sm text-foreground">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left px-4 py-3 rounded-lg hover:bg-secondary transition-colors text-sm text-foreground"
+          >
             로그아웃
           </button>
         </div>
 
         <Separator className="mb-6" />
 
-        {/* 탈퇴 */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
@@ -90,7 +132,10 @@ const MyPage = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="rounded-lg text-sm">취소</AlertDialogCancel>
-              <AlertDialogAction className="rounded-lg text-sm bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogAction
+                onClick={handleDeleteAccount}
+                className="rounded-lg text-sm bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
                 탈퇴하기
               </AlertDialogAction>
             </AlertDialogFooter>
