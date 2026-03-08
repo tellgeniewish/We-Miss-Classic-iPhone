@@ -184,9 +184,9 @@ const Index = () => {
         </div>
       </nav>
 
-      <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6">
+      <main className="pt-14 flex flex-col items-center justify-center min-h-screen px-6 sm:-mt-8">
         <div className="max-w-md w-full text-center animate-fade-in">
-          <p className="text-xs text-muted-foreground mb-2 sm:mb-3 mt-4 sm:mt-0">
+          <p className="text-xs text-muted-foreground mb-4 sm:mb-6 mt-4 sm:mt-0">
             Sometimes, simplicity was everything.
           </p>
           <div className="mb-4 sm:mb-8 flex justify-center">
