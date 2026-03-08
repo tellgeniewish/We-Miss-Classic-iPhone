@@ -1,73 +1,63 @@
-# Welcome to your Lovable project
+# We Miss Classic iPhone: Sometimes, simplicity was everything.
 
-## Project info
+<br/>
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 📱 <span id="프로젝트-소개">프로젝트 소개</span>
 
-## How can I edit this code?
+> **"홈 버튼이 있던 그 시절의 아이폰, 다시 만나고 싶지 않으신가요?"**
 
-There are several ways of editing your application.
+**We Miss Classic iPhone**은 클래식 아이폰을 그리워하는 사람들의 마음을 모으는 투표 & 공유 서비스입니다.
 
-**Use Lovable**
+홈 버튼, 하나의 카메라, 깔끔한 일자 베젤, 이어폰 단자, 그리고 박스를 열면 들어있던 이어폰과 충전기까지 — 그 시절 아이폰의 단순하면서도 완벽했던 디자인을 그리워하는 사람들이 ❤️ 하나로 마음을 전할 수 있습니다.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+한국어, 영어, 일본어, 중국어 4개 언어를 지원하며, 다크모드, 카카오톡/X(Twitter) 공유 기능을 제공합니다.
 
-Changes made via Lovable will be committed automatically to this repo.
+<br/>
 
-**Use your preferred IDE**
+## 🚀 <span id="배포-주소">배포 주소</span>
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+> **🌐 프론트엔드 주소:** https://we-miss-classic-iphone.lovable.app <br/>
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+> **⚙️ 백엔드 주소:** Lovable Cloud (내장 백엔드) <br/>
 
-Follow these steps:
+<br/>
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+<br/>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 💻 <span id="사용-기술-스택">사용 기술 스택</span>
 
-# Step 3: Install the necessary dependencies.
-npm i
+| 분류 | 기술 |
+|------|------|
+| Language | TypeScript |
+| Frontend Framework | React 18 |
+| Build Tool | Vite |
+| Styling | Tailwind CSS, shadcn/ui |
+| Routing | React Router v6 |
+| State Management | TanStack React Query |
+| Form | React Hook Form, Zod |
+| UI Icons | Lucide React |
+| Theme | next-themes (다크모드) |
+| i18n | 자체 구현 (ko/en/ja/zh) |
+| Backend / Auth | Lovable Cloud (Supabase) |
+| Database | PostgreSQL |
+| Cloud | Lovable Cloud |
+| Share SDK | Kakao JS SDK, X(Twitter) Intent |
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+<br/>
 
-**Edit a file directly in GitHub**
+## 🏗️ <span id="아키텍처">아키텍처</span>
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+<p align="center">
+  <img src="public/architecture.png" alt="기술 스택 아키텍처" width="800" />
+</p>
 
-**Use GitHub Codespaces**
+<br/>
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📂 <span id="주요-기능">주요 기능</span>
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- ❤️ **그리움 투표** — 로그인 후 클래식 아이폰에 대한 마음을 전할 수 있습니다
+- 🌍 **다국어 지원** — 한국어, 영어, 일본어, 중국어
+- 🌙 **다크모드** — 시스템 설정 연동 + 수동 전환
+- 🔗 **공유** — 링크 복사, X(Twitter), 카카오톡
+- 👤 **마이페이지** — 계정 관리 및 회원 탈퇴
+- 🔐 **인증** — 이메일 기반 회원가입/로그인, 비밀번호 재설정
