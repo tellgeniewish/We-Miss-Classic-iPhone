@@ -1,0 +1,1 @@
+CREATE POLICY "Users can update own vote reason" ON public.votes FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
