@@ -10,11 +10,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import iphoneImage from "@/assets/iphone-classic.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+
+const MAX_REASON_LENGTH = 200;
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
@@ -24,6 +33,9 @@ const Index = () => {
   const [count, setCount] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showReasonDialog, setShowReasonDialog] = useState(false);
+  const [reason, setReason] = useState("");
+  const [voteId, setVoteId] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -53,9 +65,11 @@ const Index = () => {
     }
     if (hasVoted) return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("votes")
-      .insert({ user_id: user.id, fingerprint: user.id });
+      .insert({ user_id: user.id, fingerprint: user.id })
+      .select("id")
+      .single();
 
     if (error) {
       if (error.code === "23505") {
@@ -69,6 +83,26 @@ const Index = () => {
 
     setHasVoted(true);
     setCount((prev) => (prev ?? 0) + 1);
+    setVoteId(data.id);
+    setShowReasonDialog(true);
+  };
+
+  const handleReasonSubmit = async () => {
+    if (voteId && reason.trim()) {
+      await supabase
+        .from("votes")
+        .update({ reason: reason.trim() } as any)
+        .eq("id", voteId);
+      toast(t("toast.reason_saved"));
+    }
+    setShowReasonDialog(false);
+    setReason("");
+    toast(t("toast.voted"));
+  };
+
+  const handleReasonSkip = () => {
+    setShowReasonDialog(false);
+    setReason("");
     toast(t("toast.voted"));
   };
 
@@ -261,8 +295,49 @@ const Index = () => {
             </DropdownMenu>
           </div>
         </div>
-
       </main>
+
+      <Dialog open={showReasonDialog} onOpenChange={(open) => {
+        if (!open) handleReasonSkip();
+      }}>
+        <DialogContent className="rounded-2xl max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-base font-medium text-foreground">
+              {t("reason.title")}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Textarea
+              value={reason}
+              onChange={(e) => {
+                if (e.target.value.length <= MAX_REASON_LENGTH) {
+                  setReason(e.target.value);
+                }
+              }}
+              placeholder={t("reason.placeholder")}
+              className="resize-none h-28 text-sm"
+            />
+            <p className="text-xs text-muted-foreground text-right">
+              {reason.length}{t("reason.char_count")}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={handleReasonSkip}
+                className="flex-1 rounded-lg text-sm"
+              >
+                {t("reason.skip")}
+              </Button>
+              <Button
+                onClick={handleReasonSubmit}
+                className="flex-1 rounded-lg text-sm bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {t("reason.submit")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
