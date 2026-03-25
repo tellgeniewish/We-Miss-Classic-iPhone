@@ -37,18 +37,21 @@ export type Database = {
           created_at: string
           fingerprint: string
           id: string
+          reason: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           fingerprint: string
           id?: string
+          reason?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           fingerprint?: string
           id?: string
+          reason?: string | null
           user_id?: string | null
         }
         Relationships: []
