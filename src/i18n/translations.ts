@@ -19,6 +19,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     "index.copy_link": "링크 복사",
     "index.kakao": "카카오톡",
 
+    // Reason
+    "reason.title": "투표 이유를 알려주세요",
+    "reason.placeholder": "투표 이유를 입력해주세요 (선택사항)",
+    "reason.submit": "제출하기",
+    "reason.skip": "건너뛰기",
+    "reason.char_count": "/200자",
+    "toast.reason_saved": "투표 이유가 저장되었습니다",
+
     // Toasts
     "toast.already_voted": "이미 마음을 전하셨습니다",
     "toast.error": "오류가 발생했습니다. 다시 시도해주세요.",
@@ -243,6 +251,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     "index.share": "分享",
     "index.copy_link": "复制链接",
     "index.kakao": "KakaoTalk",
+    "reason.title": "请告诉我们您投票的原因",
+    "reason.placeholder": "请输入投票原因（可选）",
+    "reason.submit": "提交",
+    "reason.skip": "跳过",
+    "reason.char_count": "/200字",
+    "toast.reason_saved": "投票原因已保存",
     "toast.already_voted": "您已经传递过心意了",
     "toast.error": "发生错误，请重试。",
     "toast.voted": "心意已传达 ❤️",
