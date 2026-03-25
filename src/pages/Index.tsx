@@ -300,7 +300,7 @@ const Index = () => {
       <Dialog open={showReasonDialog} onOpenChange={(open) => {
         if (!open) handleReasonSkip();
       }}>
-        <DialogContent className="rounded-2xl max-w-sm">
+        <DialogContent className="rounded-2xl max-w-[calc(100vw-2rem)] sm:max-w-sm mx-auto p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="text-base font-medium text-foreground">
               {t("reason.title")}
@@ -315,7 +315,7 @@ const Index = () => {
                 }
               }}
               placeholder={t("reason.placeholder")}
-              className="resize-none h-28 text-sm"
+              className="resize-none h-24 sm:h-28 text-sm"
             />
             <p className="text-xs text-muted-foreground text-right">
               {reason.length}{t("reason.char_count")}
